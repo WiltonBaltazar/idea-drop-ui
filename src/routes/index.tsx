@@ -2,12 +2,13 @@ import { Lightbulb } from 'lucide-react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { fetchIdeas } from '@/api/ideas';
+import IdeaCard from '@/components/IdeaCard';
 
 
 //fetch all ideas and display the last 3
 const ideasQueryOptions = () => queryOptions({
-  queryKey: ['ideas'],
-  queryFn: fetchIdeas,
+  queryKey: ['ideas', {limit: 3}],
+  queryFn:() => fetchIdeas(3),
 })
 
 export const Route = createFileRoute('/')({
@@ -20,6 +21,7 @@ export const Route = createFileRoute('/')({
 
 function HomePage() {
   const { data: ideas } = useSuspenseQuery(ideasQueryOptions());
+  
   return (
     <>
       <div
@@ -35,17 +37,11 @@ function HomePage() {
 
         <section className="flex-1">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">Latest Ideas</h2>
-          <ul className="space-y-6">
-            {ideas.slice(0,3).map((idea) => (
-              <li key={idea.id} className="border border-gray-300 rounded-lg shadow p-4 bg-white">
-                <h3 className="text-lg font-bold text-gray-900">{idea.title}</h3>
-                <p className="text-gray-600 mb-2">{idea.summary}...</p>
-                <Link to={`/ideas/${idea.id}`} className="text-blue-600 hover:underline"> Read more → </Link>
-              </li>
+          <div className="space-y-6">
+            {ideas.map((idea) => (
+              <IdeaCard key={idea._id} idea={idea} button={false} />
             ))}
-
-
-          </ul>
+          </div>
 
           <div className="mt-6">
             <Link
@@ -57,7 +53,7 @@ function HomePage() {
           </div>
         </section>
       </div>
-      
+
     </>
   )
 }
