@@ -22,6 +22,7 @@ function IdeaEditPage() {
     const navigate = useNavigate();
     const { data: idea } = useSuspenseQuery(ideaQueryOptions(ideaId));
 
+
     const [title, setTitle] = useState(idea.title);
     const [description, setDescription] = useState(idea.description);
     const [summary, setSummary] = useState(idea.summary);
